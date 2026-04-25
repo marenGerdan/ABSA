@@ -1,0 +1,112 @@
+/* App.css */
+:root {
+  color-scheme: light !important;
+}
+
+body {
+  background-color: #f8fafc !important;
+  color: #1a202c !important;
+}
+
+/* Для нейтральних аспектів */
+.highlight-neu {
+  background-color: #f1f5f9;
+  color: #475569;
+  border-bottom: 2px solid #94a3b8;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Гарантуємо, що весь текст у картці буде видимим */
+.review-card span,
+.review-card p {
+  color: #1a202c !important;
+}
+
+.app-container {
+  padding: 40px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.main-title {
+  color: #1e293b;
+  margin-bottom: 30px;
+}
+
+.chart-container {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
+}
+
+.review-card {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.stars {
+  color: #fbbf24 !important;
+  font-weight: bold;
+}
+.location { color: #64748b; font-size: 14px; }
+
+.review-text {
+  line-height: 1.8;
+  color: #1a202c !important; /* Примусово чорний колір */
+  font-size: 16px;
+  display: block;
+  min-height: 20px;
+}
+
+/* Підсвічування тексту */
+.highlight-pos {
+  background-color: #dcfce7;
+  color: #166534;
+  border-bottom: 2px solid #22c55e;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.highlight-neg {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-bottom: 2px solid #ef4444;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Бейджі категорій */
+.badge-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid currentColor;
+}
+
+.badge.positive { background-color: #dcfce7; color: #166534; }
+.badge.negative { background-color: #fee2e2; color: #991b1b; }
+.badge.neutral { background-color: #f1f5f9; color: #475569; }
