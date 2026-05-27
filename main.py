@@ -23,9 +23,8 @@ GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY", "change-me-in-production")
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:8000").split(",")
 
-MAX_CONTENT_LENGTH = 2000  # символів — захист від prompt injection
+MAX_CONTENT_LENGTH = 2000
 
-# ── База даних ────────────────────────────────────────────────────────────────
 engine = create_engine(
     DATABASE_URL,
     pool_size=20,
@@ -60,7 +59,6 @@ class AnalysisResult(Base):
 
 Base.metadata.create_all(bind=engine)
 
-# ── Rate Limiter ──────────────────────────────────────────────────────────────
 class RateLimiter:
     def __init__(self, max_calls: int = 25, period: float = 60.0):
         self.max_calls = max_calls
@@ -84,16 +82,14 @@ class RateLimiter:
 
 rate_limiter = RateLimiter(max_calls=25, period=60.0)
 
-# ── FastAPI ───────────────────────────────────────────────────────────────────
 app = FastAPI(title="ABSA Review Analyzer")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,  # ВИПРАВЛЕНО: більше не "*"
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
-# ── Автентифікація ─────────────────────────────────────────────────────────────
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
 
@@ -111,11 +107,9 @@ def get_db():
         db.close()
 
 
-# ── Аналіз ───────────────────────────────────────────────────────────────────
 def _sanitize_content(text: str) -> str:
     """Обрізає текст та прибирає символи, що можуть зламати JSON-промпт."""
     text = text[:MAX_CONTENT_LENGTH]
-    # Видаляємо керуючі символи, залишаємо \n та \t
     text = re.sub(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', '', text)
     return text
 
@@ -127,14 +121,12 @@ def _parse_llm_response(raw: str) -> list[dict] | None:
     ВИПРАВЛЕНО: замість жадібного `.*` пробуємо json.loads по всьому рядку,
     а потім шукаємо перший валідний JSON-об'єкт вручну через декодер.
     """
-    # Спроба 1: весь рядок одразу
     try:
         data = json.loads(raw)
         return data.get("results")
     except json.JSONDecodeError:
         pass
 
-    # Спроба 2: знайти перший повний JSON-об'єкт через JSONDecoder
     decoder = json.JSONDecoder()
     for i, char in enumerate(raw):
         if char == '{':
@@ -206,7 +198,7 @@ async def perform_analysis(content: str, review_id: int):
     try:
         await rate_limiter.acquire()
 
-        safe_content = _sanitize_content(content)  # ВИПРАВЛЕНО: санітизація перед промптом
+        safe_content = _sanitize_content(content)
         response = await _call_groq_api(safe_content)
 
         if response.status_code == 429:
@@ -237,10 +229,8 @@ async def perform_analysis(content: str, review_id: int):
         except Exception:
             db.rollback()
     finally:
-        db.close()  # Гарантоване закриття сесії
-
-
-# ── Схеми ─────────────────────────────────────────────────────────────────────
+        db.close()
+        
 class ReviewCreate(BaseModel):
     content: str
     rating: int
@@ -261,7 +251,6 @@ class ReviewCreate(BaseModel):
         return v.strip()
 
 
-# ── Ендпоінти ─────────────────────────────────────────────────────────────────
 @app.post("/analyze")
 async def analyze(
     data: ReviewCreate,
@@ -325,7 +314,6 @@ async def get_reviews(db: Session = Depends(get_db)):
     ]
 
 
-# ВИПРАВЛЕНО: захищений ендпоінт з API-ключем
 @app.post("/process_pending")
 async def process_pending(
     background_tasks: BackgroundTasks,
