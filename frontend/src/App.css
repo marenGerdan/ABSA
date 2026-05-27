@@ -1,4 +1,3 @@
-/* App.css */
 :root {
   color-scheme: light !important;
 }
@@ -8,7 +7,6 @@ body {
   color: #1a202c !important;
 }
 
-/* Для нейтральних аспектів */
 .highlight-neu {
   background-color: #f1f5f9;
   color: #475569;
@@ -17,7 +15,6 @@ body {
   border-radius: 4px;
 }
 
-/* Гарантуємо, що весь текст у картці буде видимим */
 .review-card span,
 .review-card p {
   color: #1a202c !important;
@@ -66,13 +63,12 @@ body {
 
 .review-text {
   line-height: 1.8;
-  color: #1a202c !important; /* Примусово чорний колір */
+  color: #1a202c !important;
   font-size: 16px;
   display: block;
   min-height: 20px;
 }
 
-/* Підсвічування тексту */
 .highlight-pos {
   background-color: #dcfce7;
   color: #166534;
@@ -91,7 +87,6 @@ body {
   font-weight: 600;
 }
 
-/* Бейджі категорій */
 .badge-container {
   display: flex;
   gap: 10px;
