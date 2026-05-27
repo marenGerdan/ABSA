@@ -5,7 +5,6 @@ API_URL = "http://127.0.0.1:8000/analyze"
 MAX_RETRIES = 3
 RETRY_DELAYS = [2, 5, 10]
 
-# ВИПРАВЛЕНО: клієнт на рівні модуля для перевикористання з'єднань
 _http_client: httpx.AsyncClient | None = None
 
 
@@ -45,7 +44,6 @@ async def _post_with_retry(payload: dict) -> bool:
                 await asyncio.sleep(wait)
                 continue
 
-            # Інші HTTP-помилки — не повторюємо
             print(f"⚠️  Сервер повернув {response.status_code}, відгук пропущено")
             return False
 
