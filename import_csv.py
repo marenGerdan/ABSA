@@ -9,7 +9,6 @@ API_URL = "http://127.0.0.1:8000/analyze"
 MIN_TEXT_LENGTH = 10
 MAX_REVIEWS = 500
 
-# Патерни для фільтрації незмістовного тексту
 NOISE_PATTERNS = re.compile(
     r'^[\W\d\s]+$'
     r'|^(.)\1{3,}$'
@@ -41,7 +40,6 @@ def is_meaningful(text: str) -> bool:
     if len(text) < MIN_TEXT_LENGTH:
         return False
 
-    # ВИПРАВЛЕНО: ловимо конкретний виняток замість голого except
     try:
         lang = detect(text)
         if lang not in ['uk', 'en']:
@@ -66,7 +64,6 @@ def build_payload(row: pd.Series, text: str) -> dict:
 
 
 def start_import():
-    # ── Завантаження ──────────────────────────────────────────────────────────
     try:
         df = pd.read_csv(CSV_FILE_PATH, low_memory=False, encoding="utf-8")
         df = df.dropna(subset=["body"])
@@ -75,7 +72,6 @@ def start_import():
         print(f"❌ Помилка читання CSV: {e}")
         return
 
-    # ── Фільтрація ────────────────────────────────────────────────────────────
     valid_reviews = []
     skipped = 0
 
@@ -88,7 +84,6 @@ def start_import():
 
     print(f"🔍 Прийнято: {len(valid_reviews)}, відхилено: {skipped}")
 
-    # ВИПРАВЛЕНО: попередження якщо дані зрізаються
     if len(valid_reviews) > MAX_REVIEWS:
         print(f"⚠️  Знайдено {len(valid_reviews)} відгуків, але буде відправлено лише перші {MAX_REVIEWS} (MAX_REVIEWS).")
 
@@ -96,7 +91,6 @@ def start_import():
     total = len(batch)
     print(f"🚀 Починаємо імпорт {total} відгуків...\n")
 
-    # ── Відправка ─────────────────────────────────────────────────────────────
     success = failed = 0
 
     for index, payload in enumerate(batch, start=1):
