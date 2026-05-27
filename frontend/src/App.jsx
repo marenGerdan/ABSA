@@ -9,7 +9,6 @@ import './App.css';
 const API_BASE = 'http://127.0.0.1:8000';
 const POLL_INTERVAL = 5000;
 
-// ── Утиліти ──────────────────────────────────────────────────────────────────
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const SENTIMENT_LABELS = {
@@ -18,7 +17,6 @@ const SENTIMENT_LABELS = {
   neutral:  'Нейтрально',
 };
 
-// ── Компонент: підсвічений текст ──────────────────────────────────────────────
 const HighlightedText = ({ text, analysis }) => {
   if (!text) return null;
   if (!analysis?.length) return <p className="review-text">{text}</p>;
@@ -58,7 +56,6 @@ const HighlightedText = ({ text, analysis }) => {
   );
 };
 
-// ── Компонент: картка відгуку ─────────────────────────────────────────────────
 const ReviewCard = ({ review }) => {
   const uniqueAspects = [...new Set(
     review.analysis.map((a) => `${a.category}-${a.sentiment}`)
@@ -87,7 +84,6 @@ const ReviewCard = ({ review }) => {
   );
 };
 
-// ── Компонент: графік ─────────────────────────────────────────────────────────
 const StatsChart = ({ data }) => (
   <div className="chart-container">
     <ResponsiveContainer width="100%" height={300}>
@@ -105,12 +101,10 @@ const StatsChart = ({ data }) => (
   </div>
 );
 
-// ── Компонент: індикатор завантаження ─────────────────────────────────────────
 const LoadingBanner = () => (
   <div className="loading-banner">⏳ Завантаження даних...</div>
 );
 
-// ── Головний компонент ────────────────────────────────────────────────────────
 function App() {
   const [stats,   setStats]   = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -118,10 +112,8 @@ function App() {
   const [error,   setError]   = useState(null);
 
   const fetchData = useCallback(async () => {
-    // ВИПРАВЛЕНО: не оновлюємо якщо вкладка прихована
     if (document.hidden) return;
 
-    // ВИПРАВЛЕНО: Promise.allSettled замість Promise.all — не падає якщо один запит відмовив
     const [statsResult, reviewsResult] = await Promise.allSettled([
       axios.get(`${API_BASE}/stats`),
       axios.get(`${API_BASE}/reviews`),
@@ -151,7 +143,6 @@ function App() {
 
     const interval = setInterval(fetchData, POLL_INTERVAL);
 
-    // ВИПРАВЛЕНО: пауза polling коли вкладка прихована
     const handleVisibilityChange = () => {
       if (!document.hidden) fetchData();
     };
